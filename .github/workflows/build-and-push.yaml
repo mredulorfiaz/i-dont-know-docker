@@ -37,4 +37,4 @@ jobs:
           context: web
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          target: final
+          target: prod-static
