@@ -1,7 +1,5 @@
 # **I Don't Know Docker**
 
-This project is one of the assignments of my internship at [Welcome Software](https://github.com/newscred). The main objective of this project is to learn working with docker by doing practice. So far, my progress is:
-
 - Created a REST API with flask.
 - Worked with MySQL database using an ORM **FlaskSQL-Alchemy**.
 - Applied _Separation of concerns_ design principle while structuring API.
