@@ -38,3 +38,19 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           target: prod-static
+
+      - name: Docker meta
+        id: meta-back-end
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/back-end
+          tags: |
+            type=sha,prefix=,suffix=
+
+      - name: Build and push back-end application
+        uses: docker/build-push-action@v6
+        with:
+          context: api
+          push: true
+          tags: ${{ steps.meta-back-end.outputs.tags }}
