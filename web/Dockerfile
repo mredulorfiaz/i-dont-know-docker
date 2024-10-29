@@ -1,20 +1,4 @@
-FROM node:15.14.0 as dev
-
-WORKDIR /app/web
-
-RUN npm install -g @vue/cli
-
-COPY package.json ./
-
-COPY package-lock.json ./
-
-RUN npm install
-
-COPY . /app/web/
-
-CMD npm run serve
-
-FROM node:15.14.0 as build
+FROM node:15.14.0 AS dev
 
 WORKDIR /app/web
 
@@ -22,22 +6,22 @@ COPY package.json package-lock.json ./
 
 RUN npm install -g @vue/cli && npm install
 
-COPY . /app/web/
+COPY . .
 
-FROM node:15.14.0 as production
+EXPOSE 8080
+
+CMD ["npm", "run", "serve"]
+
+FROM node:15.14.0 AS prod
 
 WORKDIR /app/web
 
-COPY --from=build /app/web .
+COPY --from=dev /app/web .
 
 RUN npm run build
 
-FROM nginx:stable-alpine as final
+FROM nginx:stable-alpine AS prod-static
 
-COPY --from=production /app/web/dist /usr/share/nginx/html
+COPY --from=prod /app/web/dist /usr/share/nginx/html
 
 COPY nginx.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
