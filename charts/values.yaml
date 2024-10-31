@@ -43,9 +43,10 @@ service:
   type: ClusterIP
   port: 80
 
+
 ingress:
-  enabled: true
-  className: "nginx"
+  enabled: false
+  className: ""
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
