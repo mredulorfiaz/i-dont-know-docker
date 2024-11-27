@@ -1,5 +1,9 @@
 import mysql.connector
-from ..constants.common import DB_HOST, DB_PASS
+
+import os
+DB_PASS = os.getenv("DB_PASS", "root")
+DB_HOST = os.getenv("DB_HOST", "db")
+
 
 
 def create_db_if_not_exists():
