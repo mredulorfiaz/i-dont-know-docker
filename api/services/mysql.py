@@ -1,9 +1,10 @@
 import mysql.connector
+from ..constants.common import DB_HOST, DB_PASS
 
 
 def create_db_if_not_exists():
     mysqldb = mysql.connector.connect(
-        host="db", user="root", passwd="root"
+        host=DB_HOST, user="root", passwd=DB_PASS
     )
     mysql_cursor = mysqldb.cursor()
     query = "CREATE DATABASE IF NOT EXISTS users_db"

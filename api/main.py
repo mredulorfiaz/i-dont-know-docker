@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from constants.common import CONFIGURATION
 from services.database import db
@@ -21,6 +21,10 @@ with app.app_context():
 
 # register blueprints
 app.register_blueprint(users_bp)
+
+@app.route('/status')
+def status():
+  return jsonify({'message': 'OK', 'statusCode': '200'})
 
 if __name__ == "__main__":
     app.run(debug=True, host=CONFIGURATION["host"])
