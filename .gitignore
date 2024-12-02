@@ -3,3 +3,4 @@ __pycache__/
 .vscode/
 userdb.sqlite3
 dbdata/
+**.tgz
