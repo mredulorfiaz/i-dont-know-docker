@@ -2,6 +2,8 @@ FROM node:15.14.0 AS dev
 
 WORKDIR /app/web
 
+ENV BASE_URL="http://localhost:5051/api"
+
 COPY package.json package-lock.json ./
 
 RUN npm install -g @vue/cli && npm install
