@@ -18,8 +18,23 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "back-end.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
   annotations:
+    alb.ingress.kubernetes.io/load-balancer-name: ci-cd-k8s
+    alb.ingress.kubernetes.io/group.name: ci-cd-k8s
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/security-groups: ci-cd-alb-k8s
+    alb.ingress.kubernetes.io/subnets: subnet-0f21e23bafbba80aa,subnet-020a770d921b1131b
+    alb.ingress.kubernetes.io/tags: env=production,role=ci-cd-k8s,elklog=True
+    alb.ingress.kubernetes.io/target-group-attributes: load_balancing.algorithm.type=least_outstanding_requests
+    alb.ingress.kubernetes.io/target-type: ip
+    kubernetes.io/ingress.class: alb
+    external-dns.alpha.kubernetes.io/hostname: |
+    {{- range $index, $host := .Values.hosts }}
+    {{- if $index }},{{ end }}{{ $host.host }}
+    {{- end }}
+  {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
