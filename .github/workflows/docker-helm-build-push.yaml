@@ -118,4 +118,13 @@ jobs:
         run: |
           helm upgrade --install front-end oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/front-end \
             --namespace front-end \
-            --create-namespace
+            --create-namespace \
+            --set config.BASE_URL=${{ vars.BASE_URL }}
+      
+      - name: Deploy backend service to EKS
+        run: |
+          helm upgrade --install back-end oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/back-end \
+            --namespace back-end \
+            --create-namespace \
+            --set config.DB_HOST=${{ vars.DB_HOST }} \
+            --set config.DB_PASS=${{ secrets.DB_PASS }}
