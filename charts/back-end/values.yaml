@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: back-end
+  repository: 0rf1az/back-end
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -13,6 +13,10 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+config:
+  DB_HOST: mysql.mysql.svc.cluster.local
+  DB_PASS: Q2thLnNCX1A7SkdRcyFXQw==
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -42,6 +46,9 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
+
+container:
+  port: 5000
 
 ingress:
   enabled: false
