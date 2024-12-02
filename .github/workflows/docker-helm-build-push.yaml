@@ -72,6 +72,7 @@ jobs:
           echo ${{ secrets.DOCKERHUB_TOKEN }} | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           helm package charts/front-end --version $VERSION --app-version $hash
           helm push front-end-$VERSION.tgz oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}
+
       - name: Package and push helm chart for back-end
         run: |
           VERSION=0.2.$TIMESTAMP
@@ -79,3 +80,11 @@ jobs:
           echo ${{ secrets.DOCKERHUB_TOKEN }} | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           helm package charts/back-end --version $VERSION --app-version $hash
           helm push back-end-$VERSION.tgz oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}
+
+      - name: Package and push helm chart for MySQL DB
+        run: |
+          VERSION=0.2.$TIMESTAMP
+          hash=$(git rev-parse --short HEAD)
+          echo ${{ secrets.DOCKERHUB_TOKEN }} | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          helm package charts/mysql --version $VERSION --app-version $hash
+          helm push db-$VERSION.tgz oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}
