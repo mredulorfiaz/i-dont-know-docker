@@ -47,6 +47,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           target: prod-static
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Docker meta
         id: meta-back-end
@@ -63,6 +65,8 @@ jobs:
           context: api
           push: true
           tags: ${{ steps.meta-back-end.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   build-and-push-helm-charts:
     needs: build-and-push-images
