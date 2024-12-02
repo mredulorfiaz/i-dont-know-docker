@@ -1,0 +1,17 @@
+apiVersion: kubedb.com/v1
+kind: MySQL
+metadata:
+  name: {{ include "mysql.fullname" . }}
+  labels:
+    {{- include "mysql.labels" . | nindent 4 }}
+spec:
+  version: {{ .Values.mysql.version }}
+  storageType: Durable
+  storage:
+    storageClassName: {{ .Values.mysql.storageClass }}
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: {{ .Values.resource.storage }}
+  deletionPolicy: Delete
