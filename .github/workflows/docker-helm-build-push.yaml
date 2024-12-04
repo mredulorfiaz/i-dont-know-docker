@@ -2,6 +2,7 @@ name: ci-cd
 
 on:
   push:
+  workflow_dispatch:
 
 env:
   AWS_REGION : "ap-southeast-1"
