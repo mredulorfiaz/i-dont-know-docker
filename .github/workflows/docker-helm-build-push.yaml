@@ -52,26 +52,25 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Docker meta
-        id: meta-back-end
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/back-end
-          tags: |
-            type=sha,prefix=,suffix=
+      # - name: Docker meta
+      #   id: meta-back-end
+      #   uses: docker/metadata-action@v5
+      #   with:
+      #     images: |
+      #       ${{ secrets.DOCKERHUB_USERNAME }}/back-end
+      #     tags: |
+      #       type=sha,prefix=,suffix=
 
-      - name: Build and push back-end application
-        uses: docker/build-push-action@v6
-        with:
-          context: api
-          push: true
-          tags: ${{ steps.meta-back-end.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # - name: Build and push back-end application
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     context: api
+      #     push: true
+      #     tags: ${{ steps.meta-back-end.outputs.tags }}
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
 
   build-and-push-helm-charts:
-    needs: build-and-push-images
     runs-on: ubuntu-latest
     env:
       TIMESTAMP: ${{ github.run_id }}
@@ -95,16 +94,8 @@ jobs:
           echo ${{ secrets.DOCKERHUB_TOKEN }} | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
           helm package charts/back-end --version $VERSION --app-version $hash
           helm push back-end-$VERSION.tgz oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}
-
-      - name: Package and push helm chart for MySQL DB
-        run: |
-          VERSION=0.2.$TIMESTAMP
-          hash=$(git rev-parse --short HEAD)
-          echo ${{ secrets.DOCKERHUB_TOKEN }} | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-          helm package charts/mysql --version $VERSION --app-version $hash
-          helm push db-$VERSION.tgz oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}
   deploy-services:
-    needs: build-and-push-helm-charts
+    needs: [build-and-push-helm-charts, build-and-push-images]
     runs-on: ubuntu-latest
     steps:
       - name: configure aws credentials
@@ -127,12 +118,4 @@ jobs:
           helm upgrade --install front-end oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/front-end \
             --namespace front-end \
             --create-namespace \
-            --set config.BASE_URL=${{ vars.BASE_URL }}
-      
-      - name: Deploy backend service to EKS
-        run: |
-          helm upgrade --install back-end oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/back-end \
-            --namespace back-end \
-            --create-namespace \
-            --set config.DB_HOST=${{ vars.DB_HOST }} \
-            --set config.DB_PASS=${{ secrets.DB_PASS }}
+            --set config.BASE_URL=${{ vars.BASE_URL }} --set ingress.className=nginx

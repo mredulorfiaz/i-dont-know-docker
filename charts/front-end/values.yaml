@@ -56,7 +56,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: front-end.devops-project.com
+    - host: front-end.devops-ic.com
       paths:
         - path: /*
           pathType: ImplementationSpecific

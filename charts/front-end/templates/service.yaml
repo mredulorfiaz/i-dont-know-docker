@@ -4,6 +4,8 @@ metadata:
   name: {{ include "front-end.fullname" . }}
   labels:
     {{- include "front-end.labels" . | nindent 4 }}
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   type: {{ .Values.service.type }}
   ports:
